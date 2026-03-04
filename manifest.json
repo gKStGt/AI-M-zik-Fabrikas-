@@ -1,6 +1,6 @@
 {
-  "name": "AI Music Player",
-  "short_name": "AI Music",
+  "name": "Aİ MÜZİK FABRİKASI",
+  "short_name": "Aİ MÜZİK",
   "description": "YouTube Channel Music Player PWA",
   "start_url": "/index.html",
   "display": "standalone",

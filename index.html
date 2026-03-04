@@ -3,492 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Music Player</title>
+  <title>Aİ MÜZİK FABRİKASI</title>
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="AI Music" />
+  <meta name="apple-mobile-web-app-title" content="Aİ MÜZİK" />
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-
   <style>
     :root {
-      --bg: #080808;
-      --surface: #111111;
-      --surface2: #1a1a1a;
-      --accent: #e8ff00;
-      --accent2: #ff3c6e;
-      --text: #f0f0f0;
-      --muted: #808080;
-      --border: #222;
+      --bg: #080808; --surface: #111111; --surface2: #1a1a1a;
+      --accent: #e8ff00; --accent2: #ff3c6e; --text: #f0f0f0;
+      --muted: #808080; --border: #222;
     }
-
     :root.light {
-      --bg: #f4f4f0;
-      --surface: #ffffff;
-      --surface2: #ebebeb;
-      --accent: #c8d400;
-      --accent2: #ff3c6e;
-      --text: #111111;
-      --muted: #999;
-      --border: #ddd;
+      --bg: #f4f4f0; --surface: #ffffff; --surface2: #ebebeb;
+      --accent: #b8c200; --accent2: #ff3c6e; --text: #111111;
+      --muted: #888; --border: #ddd;
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: background 0.25s, border-color 0.25s, color 0.25s; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    /* Background glow effects */
-    body::before {
-      content: '';
-      position: fixed;
-      top: -200px;
-      left: -200px;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(232,255,0,0.04) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-    body::after {
-      content: '';
-      position: fixed;
-      bottom: -200px;
-      right: -200px;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(255,60,110,0.05) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .app {
-      max-width: 420px;
-      margin: 0 auto;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      z-index: 1;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; transition: background 0.25s, border-color 0.25s, color 0.25s; }
+    body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; position:relative; }
+    body::before { content:''; position:fixed; top:-200px; left:-200px; width:600px; height:600px; background:radial-gradient(circle,rgba(232,255,0,0.04) 0%,transparent 70%); pointer-events:none; z-index:0; }
+    body::after { content:''; position:fixed; bottom:-200px; right:-200px; width:500px; height:500px; background:radial-gradient(circle,rgba(255,60,110,0.05) 0%,transparent 70%); pointer-events:none; z-index:0; }
+    .app { max-width:420px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; position:relative; z-index:1; }
 
     /* HEADER */
-    header {
-      padding: 48px 24px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    header { padding:36px 20px 20px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .header-left { display:flex; align-items:center; gap:10px; }
+    .app-logo-img { width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--accent2); }
+    .logo { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:var(--accent); line-height:1; }
+    .logo span { color:var(--accent2); }
+    .header-right { display:flex; gap:8px; align-items:center; }
 
-    .logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 3px;
-      color: var(--accent);
-    }
+    /* ICON BUTTONS */
+    .icon-btn { width:36px; height:36px; background:var(--surface); border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    .icon-btn:hover { border-color:var(--accent); }
+    .icon-btn svg { width:15px; height:15px; stroke:var(--text); fill:none; stroke-width:2; }
 
-    .logo span {
-      color: var(--accent2);
-    }
-
-    .settings-btn {
-      width: 40px;
-      height: 40px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .settings-btn:hover { border-color: var(--accent); }
-    .settings-btn svg { width: 16px; height: 16px; stroke: var(--text); }
+    /* LANG DROPDOWN */
+    .lang-wrap { position:relative; }
+    .lang-btn { width:auto; padding:0 10px; border-radius:20px; gap:5px; font-size:13px; font-family:'DM Sans',sans-serif; color:var(--text); white-space:nowrap; background:var(--surface); border:1px solid var(--border); height:36px; display:flex; align-items:center; cursor:pointer; }
+    .lang-btn:hover { border-color:var(--accent); }
+    .lang-dropdown { position:absolute; top:44px; right:0; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; z-index:100; display:none; min-width:140px; box-shadow:0 8px 30px rgba(0,0,0,0.3); }
+    .lang-dropdown.open { display:block; }
+    .lang-option { padding:11px 16px; display:flex; align-items:center; gap:10px; cursor:pointer; font-size:13px; transition:background 0.15s; }
+    .lang-option:hover { background:var(--surface2); }
+    .lang-option.active { color:var(--accent); }
+    .flag { font-size:11px; font-weight:700; letter-spacing:0.5px; padding:2px 5px; border-radius:4px; background:var(--surface2); color:var(--text); }
 
     /* SETUP PANEL */
-    .setup-panel {
-      margin: 0 24px;
-      padding: 28px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      display: none;
-      flex-direction: column;
-      gap: 16px;
-      animation: slideDown 0.3s ease;
-    }
-    .setup-panel.open { display: flex; }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .setup-panel label {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    .setup-panel input {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 16px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .setup-panel input:focus { border-color: var(--accent); }
-    .setup-panel input::placeholder { color: var(--muted); }
-
-    .load-btn {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      padding: 14px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .load-btn:hover { background: var(--text); color: var(--bg); }
-    .load-btn:active { transform: scale(0.98); }
+    .setup-panel { margin:0 20px; padding:24px; background:var(--surface); border:1px solid var(--border); border-radius:20px; display:none; flex-direction:column; gap:14px; animation:slideDown 0.3s ease; }
+    .setup-panel.open { display:flex; }
+    @keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+    .setup-panel label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; display:block; }
+    .setup-panel input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; }
+    .setup-panel input:focus { border-color:var(--accent); }
+    .setup-panel input::placeholder { color:var(--muted); }
+    .load-btn { background:var(--accent); color:#000; border:none; border-radius:10px; padding:13px; font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; cursor:pointer; }
+    .load-btn:hover { background:var(--text); color:var(--bg); }
+    .load-btn:active { transform:scale(0.98); }
 
     /* NOW PLAYING */
-    .now-playing {
-      margin: 24px 24px 0;
-      padding: 28px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .now-playing::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(232,255,0,0.03) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .track-thumb {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border-radius: 14px;
-      overflow: hidden;
-      background: var(--surface2);
-      position: relative;
-      margin-bottom: 20px;
-    }
-
-    .track-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .track-thumb .thumb-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--surface), var(--surface2));
-    }
-
-    .track-thumb .thumb-placeholder svg {
-      width: 48px;
-      height: 48px;
-      opacity: 0.2;
-    }
-
-    .playing-indicator {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: var(--accent2);
-      color: #fff;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      font-family: 'Bebas Neue', sans-serif;
-      padding: 4px 10px;
-      border-radius: 20px;
-      display: none;
-    }
-    .playing-indicator.visible { display: block; }
-
-    .track-info {
-      margin-bottom: 20px;
-    }
-
-    .track-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      letter-spacing: 1px;
-      line-height: 1.2;
-      margin-bottom: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .track-channel {
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-    }
-
-    /* PROGRESS */
-    .progress-wrap {
-      margin-bottom: 20px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 3px;
-      background: var(--border);
-      border-radius: 10px;
-      position: relative;
-      cursor: pointer;
-      margin-bottom: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 10px;
-      width: 0%;
-      transition: width 0.5s linear;
-    }
-
-    .progress-times {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    /* CONTROLS */
-    .controls {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .ctrl-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 50%;
-      transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .ctrl-btn:hover { background: var(--surface2); }
-    .ctrl-btn:active { transform: scale(0.9); }
-    .ctrl-btn svg { width: 20px; height: 20px; stroke: var(--text); fill: none; }
-
-    .play-btn {
-      width: 60px;
-      height: 60px;
-      background: var(--accent);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      box-shadow: 0 0 30px rgba(232,255,0,0.2);
-    }
-    .play-btn:hover { background: var(--text); box-shadow: 0 0 40px rgba(255,255,255,0.2); }
-    .play-btn:active { transform: scale(0.94); }
-    .play-btn svg { width: 22px; height: 22px; fill: #000; stroke: none; }
-
-    .ctrl-active svg { stroke: var(--accent) !important; }
+    .now-playing { margin:20px 20px 0; padding:24px; background:var(--surface); border:1px solid var(--border); border-radius:24px; position:relative; overflow:hidden; }
+    .now-playing::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(232,255,0,0.03) 0%,transparent 60%); pointer-events:none; }
+    .track-thumb { width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; background:var(--surface2); position:relative; margin-bottom:18px; }
+    .track-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .track-thumb .thumb-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--surface),var(--surface2)); }
+    .track-thumb .thumb-placeholder svg { width:48px; height:48px; opacity:0.25; }
+    .playing-indicator { position:absolute; top:10px; right:10px; background:var(--accent2); color:#fff; font-size:10px; letter-spacing:1.5px; font-family:'Bebas Neue',sans-serif; padding:4px 10px; border-radius:20px; display:none; }
+    .playing-indicator.visible { display:block; }
+    .track-info { margin-bottom:18px; }
+    .track-title { font-family:'Bebas Neue',sans-serif; font-size:21px; letter-spacing:1px; line-height:1.2; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .track-channel { font-size:12px; color:var(--muted); }
+    .progress-wrap { margin-bottom:18px; }
+    .progress-bar { width:100%; height:3px; background:var(--border); border-radius:10px; cursor:pointer; margin-bottom:7px; }
+    .progress-fill { height:100%; background:var(--accent); border-radius:10px; width:0%; transition:width 0.5s linear; }
+    .progress-times { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+    .controls { display:flex; align-items:center; justify-content:space-between; }
+    .ctrl-btn { background:none; border:none; cursor:pointer; padding:8px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .ctrl-btn:hover { background:var(--surface2); }
+    .ctrl-btn:active { transform:scale(0.9); }
+    .ctrl-btn svg { width:20px; height:20px; stroke:var(--text); fill:none; stroke-width:2; }
+    .play-btn { width:58px; height:58px; background:var(--accent); border:none; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 0 30px rgba(232,255,0,0.2); }
+    .play-btn:hover { background:var(--text); }
+    .play-btn:active { transform:scale(0.94); }
+    .play-btn svg { width:22px; height:22px; fill:#000; stroke:none; }
+    .ctrl-active svg { stroke:var(--accent) !important; }
 
     /* PLAYLIST */
-    .playlist-header {
-      padding: 28px 24px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .playlist-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px;
-      letter-spacing: 2px;
-      color: var(--muted);
-    }
-
-    .track-count {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .playlist {
-      padding: 0 24px 120px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .track-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: background 0.15s;
-      border: 1px solid transparent;
-    }
-    .track-item:hover { background: var(--surface); }
-    .track-item.active {
-      background: var(--surface);
-      border-color: rgba(232,255,0,0.15);
-    }
-
-    .track-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 16px;
-      color: var(--muted);
-      min-width: 24px;
-      text-align: center;
-    }
-    .track-item.active .track-num { color: var(--accent); }
-
-    .track-item-thumb {
-      width: 48px;
-      height: 48px;
-      border-radius: 8px;
-      overflow: hidden;
-      background: var(--surface2);
-      flex-shrink: 0;
-    }
-    .track-item-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .track-item-info {
-      flex: 1;
-      overflow: hidden;
-    }
-
-    .track-item-title {
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 3px;
-    }
-    .track-item.active .track-item-title { color: var(--accent); }
-
-    .track-item-duration {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    /* LOADING / EMPTY STATES */
-    .state-msg {
-      text-align: center;
-      padding: 60px 24px;
-      color: var(--muted);
-    }
-    .state-msg .icon { font-size: 48px; margin-bottom: 16px; }
-    .state-msg p { font-size: 14px; line-height: 1.6; }
-    .state-msg strong { color: var(--text); }
-
-    .loader {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-    }
-    .loader span {
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: bounce 0.6s ease-in-out infinite;
-    }
-    .loader span:nth-child(2) { animation-delay: 0.1s; }
-    .loader span:nth-child(3) { animation-delay: 0.2s; }
-
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-      40% { transform: scale(1); opacity: 1; }
-    }
-
-    /* HIDDEN YT PLAYER */
-    #yt-player { position: fixed; bottom: -9999px; left: -9999px; width: 1px; height: 1px; }
-
-    /* SCROLLBAR */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-    /* ERROR */
-    .error-toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: var(--accent2);
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 12px;
-      font-size: 13px;
-      transition: transform 0.3s ease;
-      z-index: 999;
-      white-space: nowrap;
-    }
-    .error-toast.show { transform: translateX(-50%) translateY(0); }
+    .playlist-header { padding:24px 20px 10px; display:flex; align-items:center; justify-content:space-between; }
+    .playlist-title { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; color:var(--muted); }
+    .track-count { font-size:12px; color:var(--muted); }
+    .playlist { padding:0 20px 120px; display:flex; flex-direction:column; gap:4px; }
+    .track-item { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; cursor:pointer; border:1px solid transparent; }
+    .track-item:hover { background:var(--surface); }
+    .track-item.active { background:var(--surface); border-color:rgba(232,255,0,0.15); }
+    .track-num { font-family:'Bebas Neue',sans-serif; font-size:15px; color:var(--muted); min-width:22px; text-align:center; }
+    .track-item.active .track-num { color:var(--accent); }
+    .track-item-thumb { width:46px; height:46px; border-radius:8px; overflow:hidden; background:var(--surface2); flex-shrink:0; }
+    .track-item-thumb img { width:100%; height:100%; object-fit:cover; }
+    .track-item-info { flex:1; overflow:hidden; }
+    .track-item-title { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+    .track-item.active .track-item-title { color:var(--accent); }
+    .track-item-duration { font-size:11px; color:var(--muted); }
+    .state-msg { text-align:center; padding:50px 20px; color:var(--muted); }
+    .state-msg .icon { font-size:44px; margin-bottom:14px; }
+    .state-msg p { font-size:14px; line-height:1.6; }
+    .state-msg strong { color:var(--text); }
+    .loader { display:flex; gap:6px; align-items:center; justify-content:center; padding:40px; }
+    .loader span { width:6px; height:6px; background:var(--accent); border-radius:50%; animation:bounce 0.6s ease-in-out infinite; }
+    .loader span:nth-child(2){animation-delay:0.1s} .loader span:nth-child(3){animation-delay:0.2s}
+    @keyframes bounce{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1}}
+    #yt-player { position:fixed; bottom:-9999px; left:-9999px; width:1px; height:1px; }
+    ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+    .error-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(100px); background:var(--accent2); color:#fff; padding:12px 20px; border-radius:12px; font-size:13px; transition:transform 0.3s ease; z-index:999; white-space:nowrap; }
+    .error-toast.show { transform:translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
-
 <div class="app">
   <header>
-    <div class="logo">AI<span>.</span>MUSIC</div>
-    <div style="display:flex;gap:10px;">
-      <div class="settings-btn" id="themeBtn" onclick="toggleTheme()" title="Hell/Dunkel">
-        <svg id="themeIcon" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="var(--text)"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <div class="header-left">
+      <img class="app-logo-img" id="appLogoImg" src="" alt="logo" />
+      <div class="logo">Aİ<span>.</span>MÜZİK<span>.</span>FABRİKASI</div>
+    </div>
+    <div class="header-right">
+      <!-- Language Dropdown -->
+      <div class="lang-wrap">
+        <div class="lang-btn" onclick="toggleLangMenu()" id="langBtn">
+          <span class="flag" id="currentFlag">DE</span>
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" style="width:12px;height:12px;margin-left:2px"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="lang-dropdown" id="langDropdown">
+          <div class="lang-option" onclick="setLang('tr')"><span class="flag">TR</span> Türkçe</div>
+          <div class="lang-option active" onclick="setLang('de')"><span class="flag">DE</span> Deutsch</div>
+          <div class="lang-option" onclick="setLang('en')"><span class="flag">EN</span> English</div>
+        </div>
       </div>
-      <div class="settings-btn" onclick="toggleSetup()">
-        <svg viewBox="0 0 24 24" stroke-width="2">
-          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
+      <!-- Theme Toggle -->
+      <div class="icon-btn" id="themeBtn" onclick="toggleTheme()">
+        <svg id="themeIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </div>
+      <!-- Settings -->
+      <div class="icon-btn" onclick="toggleSetup()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </div>
     </div>
   </header>
@@ -496,33 +156,31 @@
   <!-- SETUP PANEL -->
   <div class="setup-panel" id="setupPanel">
     <div>
-      <label>YouTube API Key</label>
+      <label id="lblApiKey">YouTube API Key</label>
       <input type="password" id="apiKey" placeholder="AIza..." />
     </div>
     <div>
-      <label>Kanal-ID oder URL</label>
+      <label id="lblChannel">Kanal-ID oder URL</label>
       <input type="text" id="channelId" placeholder="UCxxxxxxxx oder youtube.com/@kanal" />
     </div>
-    <button class="load-btn" onclick="loadChannel()">LADEN</button>
+    <button class="load-btn" id="btnLoad" onclick="loadChannel()">LADEN</button>
   </div>
 
   <!-- NOW PLAYING -->
-  <div class="now-playing" id="nowPlaying">
+  <div class="now-playing">
     <div class="track-thumb">
       <div class="thumb-placeholder" id="thumbPlaceholder">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="1" style="opacity:0.25">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="1">
           <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
         </svg>
       </div>
       <img id="trackThumb" src="" style="display:none" />
       <div class="playing-indicator" id="playingIndicator">● LIVE</div>
     </div>
-
     <div class="track-info">
-      <div class="track-title" id="trackTitle">Kein Track geladen</div>
-      <div class="track-channel" id="trackChannel">Kanal konfigurieren →</div>
+      <div class="track-title" id="trackTitle">-</div>
+      <div class="track-channel" id="trackChannel" style="cursor:pointer" onclick="toggleSetup()"></div>
     </div>
-
     <div class="progress-wrap">
       <div class="progress-bar" onclick="seekTo(event)">
         <div class="progress-fill" id="progressFill"></div>
@@ -532,56 +190,119 @@
         <span id="timeDuration">0:00</span>
       </div>
     </div>
-
     <div class="controls">
-      <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="Shuffle">
-        <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+      <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()">
+        <svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
       </button>
-      <button class="ctrl-btn" onclick="prevTrack()" title="Zurück">
-        <svg viewBox="0 0 24 24" stroke-width="2"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+      <button class="ctrl-btn" onclick="prevTrack()">
+        <svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
       </button>
-      <button class="play-btn" id="playBtn" onclick="togglePlay()">
+      <button class="play-btn" onclick="togglePlay()">
         <svg id="playIcon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </button>
-      <button class="ctrl-btn" onclick="nextTrack()" title="Weiter">
-        <svg viewBox="0 0 24 24" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+      <button class="ctrl-btn" onclick="nextTrack()">
+        <svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
       </button>
-      <button class="ctrl-btn" id="repeatBtn" onclick="toggleRepeat()" title="Wiederholen">
-        <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      <button class="ctrl-btn" id="repeatBtn" onclick="toggleRepeat()">
+        <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </button>
     </div>
   </div>
 
   <!-- PLAYLIST -->
   <div class="playlist-header">
-    <div class="playlist-title">PLAYLIST</div>
+    <div class="playlist-title" id="lblPlaylist">PLAYLIST</div>
     <div class="track-count" id="trackCount"></div>
   </div>
-
   <div class="playlist" id="playlist">
     <div class="state-msg">
       <div class="icon">🎵</div>
-      <p>Klick oben auf <strong>⚙</strong><br>API Key & Kanal eingeben<br>und Musik laden.</p>
+      <p id="emptyMsg">Klick oben auf <strong>⚙</strong><br>API Key &amp; Kanal eingeben<br>und Musik laden.</p>
     </div>
   </div>
 </div>
 
-<!-- YouTube Player -->
 <div id="yt-player"></div>
 <div class="error-toast" id="errorToast"></div>
-
-<!-- YouTube IFrame API -->
 <script src="https://www.youtube.com/iframe_api"></script>
-
 <script>
-  let player = null;
-  let tracks = [];
-  let currentIndex = 0;
-  let isPlaying = false;
-  let isShuffle = false;
-  let isRepeat = false;
-  let progressInterval = null;
-  let playerReady = false;
+  // Logo
+  document.getElementById('appLogoImg').src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAMCAggKCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoICAgICQoJCAgNDQoIDQgICQgBAwQEBgUGCgYGCg0NCw0PDhAODxANDw0PEBAPDg8QDQ8PEA8PDw0NDg0QEA8ODQ0QDw4QDw4NDQ0PDw8NDQ0ND//AABEIAKAAoAMBEQACEQEDEQH/xAAdAAABBQEBAQEAAAAAAAAAAAAEAwUGBwgCAQkA/8QAQRAAAgEDAwIEBAQDAwoHAAAAAQIDBBESAAUhBhMHIjFBCBRRYSMycYEkQsEzcqMJFSU0Q1JikqGxGERTg5GTs//EABwBAAEFAQEBAAAAAAAAAAAAAAMBAgQFBgcACP/EAEMRAAEDAgMEBwUFBwMDBQAAAAECAxEAIQQSMQVBUWEGEyJxgZGhMrHB0fAUI0JSkmJyc4KisuEHwvEVQ5MWJFNjs//aAAwDAQACEQMRAD8A+V41Nplfr69Xq80tersDXqWv1tLFLSiLpaeBREcWkqSlNGQUmmE1LQ3NOlLtBPtqOpcVYIw5NOsXTJPtqIp4VNTgyd1eS9Mn6aRLwrysERuptqtnI9tSkrmoa8MRTXNSW1JBqCtuKEki0SoikxQ7ppaARSTDSUIiuSNJTK40lerq+vUleaSvV4dOpK/Aa9Xq7A0terq2lp1dBdLFOApdE16jpFH0tPphNT20TUk2fZixFhqKtUVoMJhFOEBImtMeB3we7tuQWSmo5DAT/rMoENNbnkTSlFksQQRD3WBtcC+qpxTi/YE1szgcLs9M451KFbke0v8ASmSJ3FWUHca1Z05/kynwHzNfSRt7rEHnA+2REPNrcW/c+usfjsU8w5kWpKe8n4CPWq9e3MAgw0y6ocSAj0lVd7//AJMlyhNPX0kjeyyK8IP2yHesf203A4l59zIhSFdxPyj1rydu4BRh1l1I4iF+nZrLfjd8Gm7bcGkno5Owv/mYrTU9rXyMsRYRj2He7ZJHp6X1zZcR7YqxRg8JtAf+ydSpX5PZX+lUFX8uYc6zHvOyFSQRq3bXNZDF4NTSilQg1GaumtqUDWfdbim6VNEqvUmh2XXqARSbDSUMiuSukptcHSV6vRpKSvAunxSV0RpaSvRr1LXY06lFLRLr1FSKJhTSVLQKuLwi8A6uuMb3FLTysFilkR3kqGN7LR0qWlqjcWyUpF+b8TyMBWu4kBXVtjMrgNB3nQe+thsnZL2MMpEJiSo2AHG8W5kgRoTWsumulul9iYGrj/zruiXAo2kWenpnvwK5kIppahfQwQq6QklWadlEpktsZbvGTawEDw3+J8AK6H1aMCiG3eqTb7wj71f8JMS2g7lqhShcQDFWHVePW4bgFaSQwwGwSniOEap7KQtri1vLYL6eUaV5doFhWXO1sJhTGEQAd61dpZPGTofXnWj/AAZr2NFyTcTN7/8ABGf66+bumrqm8aEg/gB/qVUZTv2ghw3MUr4v7iwojZiCZEHr9mP9NM6FuqcxpBP4D7015LnUHrBqKzhTePm4beGaOQywi+cEpzQr/MBe9gRfjlfqp19IsrtBvUkbUwmKOXFtgncodlQ5yNffwIqverNj6Y35/wCGQbVukrC9OGEMFS59RSsSaeKoY2tHNGEmN1UwPJ3A9bAVdoweBFj3/MRzmK1CWm8Y3lW51qQLL/7qf4iYlxA3qSSpIucyRFZP8Y/h+rNvaRjaogjNpJY0ZJILWv8ANU7XeCxJGYaWHgfi+ZQYjeJGbq3BlVwOh7joe6x5VzzamznMKrtCRqCLiOPdvkSI1IJiqYnTViKyixQsi6WoqhSJGvUE1wRpKZXjDSUlJ6SvV2NPpleDSikru2linV0o0tOFEoNJR01bPRPR9PS08e6bpGZFlP8Ao7b7easYHiedT6UgPKq/ll4LBkaOOprXVqeJbbMJFlK/2p58Tu01ip6SltIJGZavZToAPzK5HcN+sEaXPu/jDV0m3JVC6bnuMbD5j0NHRklTFS/+k8ptE0i+btwAeXJBHLw+FDTeZIgafX1r41qWekjWz2E4VBz4hYzrJuEgnsWNtxKEXgAOLkqBVRO2b+csiSTe/J0SKzb+NdfUVuKJJuSTJNaF8PvGLyxxmL8thcP/AEx/rqO5pUNJM61vf4d957tC7en8Qw/woT/XXzN/qAY2gn+En+9yt3gR90DRHxAbt26AN6/jqP8ADkP9NN6AqnHq/hq/uRS4xP3ZNYC8RfF/iSMRetxcv+3pj/XX0y1pWHWog61njdN+OVwSDf2OpIFSWcY40oKQogjQgwavjpDxdrayiZ3kzrqGNcJpCf4iAeXt1JuMiARF3SQ4WQNdu2yyjfw4UnOoZk6EfXoeIg6xWld6QJ2lh1YVZyYlsZ21ARmAPbtpYkFaLSFFxMLbzCm+t+jqaqppdz2yPsiA/wCkdv8A56RmYjvRoOPlyb3CBUQC6rGFlighNuKZWGlklJ9lR1H7Kjv5HfzvGVC0vozABKwJUkeyR+ZHLim0cBYqqNhqzqIaQYaWgmkzpKGa4Gmmm14w0lerwaJQ66Glr1erp1KKVUaSnirM8IfD1JpnqK5Xj2+ip/nahipXvRhmWKKO9iwqJEdMowbiORQQ1iK7FPkQ22e0ox3cT4CrFluO2sdkCe/hrrJ8LRT50buUm79QURqR+G9TGTEtgsVLAe4IU9h5UCE2sWYmwFgJSGg23kRoAY8tTz3nieUCo6VS4lTputaAo96gIHIbvPWasf4rJPw6Q2tkkAAHsBADb9BYD9ANXuIbDbSUDd9HzNc16P45e0Ma/jF6rJVHAEgJA5JTCRyAqgqBTcaqDXR5q2uhNnkur2NuDqOtNqVDl6+jvwnVV9ul+1UR/gw6+Xv9RuztBv8AhD+9ddH2fdgePwoj4p6q22J96lR/hTH+mmf6dmdoL/hn+5FOxwhlVfNzr3a3JZrcc6+om02rm63L1Ue4qbnUkUk1dHwzxhlqQQCLSKQQCCrQkEEHixBIP2J1ZMiWlD64j1rHbXxCsPjGHkagjnqSlQ7ikkHkTUK6v3Z9q36samuUjmOcTscZ4ZkSSSGT6hi5ANjiwBscbGj6sOt5Vix+fvtb5TW/xTIZeWhpV0KISeHI8dYPnqAaY/FfoVIpUqaINJQVkBrKcqpbsxgqs0cmN8BTysI2JCqpYL6ryDDPGC04e0kgTxB9k34j6mkcRIDiB2VAmOEGFAxpB8PCKrhhqxqEaRbSUI142vUlcg6bSV+GiUOvRpwr1dqNLSiiIKcsQqglmIUAepLGwA+5JsNDVoaImBc6eXru760V4kVcVJQ7hQNJMoqpaaajoZmkyijaolkNQyIBTARrC0KyQSP3c4SylRGTRsNh5/7QCCNPQb943DgRoKvGH0M4ZeGebOZQCmzbKPvFZp7RKXISLXSQswowQGH4W6T/AEn3h/sEjIA9SZaiGMc/uR++tRhm86iORHnasF0ixZwrLbg3OJX/AOOVx4xU++L8HKiFv5b/APKij/sdSX152kK41TbCwowuNxbAEZFFIHCDb3VRux1MYYZuqgWLEn8ova5+2qowLmt2QTpWpujus9pKKrVdKpxAAkbtFrcHEuEv+x0JTqFWSQfGhjDvIPaSR4V5vXxNSbc7JtVZZHxMgURSxlgOLdxHW4Btktj7EnHWM2z0fwW0yFYlsKI0MkHzBB8K1ezse4ynKRbnSOz/ABPTbjIke6Vl4kyKArFFGGt6ntoi3Ppk9yASARkbt2N0ewWzFFWGbCSdTJJ8yT5UTaOPW8nKkW5UR1p1htKqyiqpWax8qOJGHHvhkR6++tqlxKbKNZIsOqPZST4VlffKyIse26uObEH1F7X+ujDiKemrg+FGUd2qU+mIP/yrr/TUxtWVpZ5H3VmtpsdbjMKni4kea0/Oq+8fYr1wlJu0qPmfqYp5Yb/8qAftqIpOUDx9DWjwbynesUozKpn95KVfGpP0BU/N0FFQRSTFqWaqmqaCJnvPEJYpfmFRv4Zsll7BaokXtMjsqhGmfVFiUhl1L9uBJ3D3jeCBqT3VrUNYbFYVLJKkFIWXIuVDMChYBhJUJi5tkTGpIoWppyGZSCpVipUm5UgkEEgAEi1iQACfYemrpJtWYmRIoVxp1DNcabTa5Okr1egaLFCrpRp1IaUQaSvA1MvDHYXmqcI1Z5VikeNEBZi1gmQABN4ldphYesY9BciBjHeqaUs7viQPjT8udbbR0UqD3BKlx45cp5GrV3v4ed3qXhaGjEdJT0MMQqKiWCkgUU0SPWuxlkR/LWTTBsI2LSFgAxDHUTCPpDIVBvJt384H1xraubGxjyUrbbJSlCBNtSCsmPauc0mLRe1N/g1WpQVbNJLTyiWKFhhI4Ve1WU7tm8kcYXBbyH1BCkerC9yl/qpOht6Gslt7YYKmmS427OaerUpWXMhQE9kTyAmd5A1uvxD2T5+Wl22KDJY7RyVAU3RIafJKcEks0sna88tlVYiijKQs8VbtrbCcIwtCFDMgDnGZSUj+YEkkaQQYO6u6F9G/trqtqY4qS2o5iPZK7kGNPuzKbkFYUhYSUpsqm9q6Ur4qPdpY2mhFIIiGjdo8A1dRxKFKEHIpKR63K5XJ51GfGG67CNnKS4rfckdQ8ozyBSDHGK7IvBpZwb7aQnMpSer0JCc6Va6+yCD3wdacOs6GsaM/Oo0sRlEcEkinJC6rirSkDvXcG4dndExMbxEMGitYFhTQXh1DrIkgG8Sd2o9xqftDZHWoLzJTBUMqBoQQlMR+E5wYPMVXs/QsllkVWaN2wCEsWBZiqFLf2qkgi6nL3xtkVBh8YlxfVG5jdf01B5R6xPPsRhlNth0WB41+g6BlIZyGRUJVkAYucbZlgSO2ouBdjf1NrAFvYnGJaX1e/nb/ACTyj1r2GwynUFzUDherf8KvDSseOBqKPFZK5KaokAUspjqaWKRFcguilZ3VnSztkSz4BFStxzrDKXhij20slaBN5KXiPGGpAsJMXNb3A7OaaQhbpGbNmKT7OVDnbB/MVBDgvIuABvqIbz0rXNs1JuDmSZWSqWR3Ly2kFZAiZlrgXjSVRcg4lsf5raXDIwito4nC2SR1eUDsn2ZUUxe0ie8TVQnDuPbPJITnbSQQQJKlrQQQN4SlKwT+EKga1ZnRXTjUc01G9Pg7O8aT4sMg6MkcBZWUB+48bK5V1YZIwRxEzpgNp9e22FLTC0kcLwZnnwm0SYm9ZbpD0cawzY2jg5KcwUJ7SkFC9BwSqCSoDNIAnLINR+I1GtVMjJLTxdqB2Pcle0mdRLMrIUjk5dJVfEgAegZrNjOQ91gkzqd2knSjYDY6VJyh1pvsp9tZTmKQEkiEqgxAI/ZzDUgP2yfDvvFM8zzUmdJPQzRPU08tPVU7CphZqQ3ikd7NVx04GUakSBQbXF4OMeSGSog2g+RH0Knt7HxbcqU2cqkLE23Izae1uBBjmLVU/iVsDwVISVXSQwxO6uCrXsUDEMAxMiospJuSzk3N9SME91zSV6zPoSPhWPUjItbfA27iAryEwO6ohImrChkUiRpKHXGm16vVGj0GlANLTaUjGkrwNaJ+CXqFabe6WoviWqIKIyXsscNUs8lS5tySYKVohyAO6xOWOLUW2EzhXCdw9Tp5RVlgMQ2jEJQpMlSVReAIgExFz2hFwNdTEWTvYaaq6wR3Z5oxEGdmJzZ4jZit7Es62vb1drfna9GXSyxhROllc5052mtNhdr4kIfw6VnIvdOgGaw4C9wImqt8Ddw22SrK7gWWF9rrIkaOOKWcTP2yvyyyvGhqWjEqRZOvnYfcG+2qp4Yd37OElzIrIFTlKrRMAkd4ExWSwiCX2CZyh1JXfKICVEZjfsZ8uYQZFfQDwT6Hg+RoXeQCVaOtXzizyduv3DCqducmqCTMz3JYuWu2QJ+adubVxCMQ+lKCoF7DkqBzCVMsFSeNjbwjdXWcSy0ghLUBPZAiIAKASI3BJJEcu+pDt/w+7bU7dudK9SEjqVohLNGVXtiJ1mUnLy/iPGpN/Y8EG2qbaXTPaeB2ngnUMFRbLsIMnNKSi0X7KVGLa3IinqxSmnEEt5gM3ZM31EWv2Z3Up1r4H0FRRxUszBY0qu4pJsSyDNUuCPM2XbFj+a3Dehs9k9LMbh8SvEtIlRbAjUapE9wy5u7gL0PDYpeHc6xAki/LQweYB7Xh41hXq3oqVqekp1ydYZ4YZuwQt2rIY6+lAlZWjZo4quWVwiyFVbFhEShPZsLikHajpaHacJyBVoyEocsJIEpABi8SJr3SJDf3jbc5G1KzWE3Mx4GfCKkHhH4ZMH+VqHkgjrKz5SEysZCr0zfM1il1ijjQz0SiWLIC4j5JuBqs27tHqsUF5My2QFLSN+aEtRMEgLICrfi0qHshSMOx1hBKVRlFgZEmDc+1G7cDea2f4H+HNNT01LDGUZXqp52cCwzlqnfA2J86iOOK/uVH5fQcr6TbafeW++UnMGwmOIS2E5hyJUpfcTE75mJdK8yoiAm3gSrwUSpXidaR/wDDxt0fTqUPdPYlQyNM7A4vi8psfLz3JXBHH0AFrajsdNdovdI3cV1PaQcoQLEiQJOo0SPfJo4xROMOVIEKIgTebGZJ1Hvpv658PaVqKpkMqrIsW5yIRbuZJSzojRtxhJFl31YEENCCLWuJeH2viFYhtoNqhSsMJmAO2lV99yMp5K8Kj4WC4hpd0kpBG66hM8dSO+/KvnZ437xt6zAURkcJQRRStPDFFO0q1FQ4aYQvJE0xp2gMjJI4zyUkFGVfo3Yrjy2UF9ISuO1BJEybgkAmRBuJrB7XZDTjgBBGclMGRGREgSAYC84AgWA4zVmdl4W6QWJ2SaZu0jBvykxU4DY3xupc+35lW/5FtVKeLrGKv+G3IjMT9cqv3NsYgdRh1LUW0EjLMSmAIP5hyMiq++N3qMVW9VE+RYxzTUSvkWV6emSmmpnW/oe1WBCLkEpcWyxF1sZIThkRvEnvmDVFtFxpxSShGUgQq8hUBMK07JMmRJ42mKzu41f1TGkHXXqEaT0hptdKNGqPXarpaYTSyJpYpk1N+hd6kp4nqY7Z09ftsov6Ww3GM8e/5xqBi2etaWg74/3VHS71eLaV+y572z8K96g6wqYqmRjNIDW0m2yTPkfxL01NIzNb81mz/e+oT2ERlSmNAI/T86mYHFFwKXP/AHHAfBxQHpFRWhrWjkRTdXjLobHlWBtcEe4I4N/UX1LIDgB4/GpYUWyRX0B8KfGtuxtcsnEbwtTvfLyxqKhyFLcsIpnMHFwI0ia9pVA5htvo6Gw84dFlDiOagWwtPKEpKhxvwNbnYGOa2kF4XN9+2D2fzXGVXOUHtcFa61B9y+I1Zdp32AO6MRQ9kgm2VJXUSJb0Ie0jsCAR5PX01cr6Nob2js7FAA5VOBVv/lYeKh3dkT/zWw60MpOJTBDZyqtcKV2T3gKIB8N1ddffFPPPSxUq5K6T5u6SXldslYRpwAr4NcZEAXDEqqswXCdFcJsx1WMUQrMkJSjLA3TOsgkXtoYuSBR3fsuA+8UoKWCnsR/SeZBFjHZMm0mpT8Nm6NLQV3fCmPv0aQNZcBL81HLIkRIyxKRYLfl44o8rlBbOdSP+v4VQPah1S/0EJJ3ak9xJ41l9oYlb2z1ur9pS9eOpV4A6cop5+IfeGh26jamxASsqEme10SQYyxrJib42qAsoHJgeRf8AaaA8yP8A1DiCvXK2pA4wEgkdxRb9oA7qfsx5TWzkuJ1SseF8wnlmHvpk8B/icSmhpqOYtxubckgtClTuFMwSbG/nAmnIZbo11ZWZCHM7b/RpvaaXsa2QCGLp4lDLiezyMN+u8EVeNJZxaOtSsBSpCk3KgsqUltMDcSttM6RKpiah7/Eg0XScFIkjNLP8w5bNrxRQ1XasD7ZLUoBYiyqABxxpsP0aZe6Rv45YADYbEQO0VpH9pSTzzUP7e24lePe4FSBHtCQlRn9hSkGDrJ51M/Ebx5k7daUv2YVnERt/aNUU9RTSBwR5UKzMqPf+1QNZ1jlAzWz9gIWlDkSSEFf7ORSFIAP5ipNx+QnQlM1+Pew+z2kNKUOvckRPsgK9rwyyOJMb5rBu7bo8srre7SFEufc/lufoPTXSmkhpJPAVznEL61zKONS7pTxJqDW0c5dpP82x1k8CuSVUxwyzLx7ZNHGDb7agfYkFpxvTOCD4pivfaPvErNwDppIF/dX7r/qU1UcdQ6gPNXbhLx6dvs7ZDGo/udhx+41LwGH6htKJmB8akPJkZx7JKgPAIn4VA3XVrUI0hINJQjSLDXjQ6UVdGqITSyJpRQyaWVNOoZNSfpiBng3GNRk3yazqL2N6WrppHZQSAxSmNQ5FmbFWI9G0Nz2SOU+RHwmq98gOsLP58v60KA81ZR3mg/EEErtrMBk23hGt7inra2jQ/r2qdAfuPbUdVwnu9xI+FG2bZWISNA7P6m21n1UaiscpL5G7MSSfUkk3JP1JvzpqQBAFXCzYkmtemR16Xp5EFngZP18rFSePqcWBBvZgeD6X7zKHsLlUARHfvrlGGxamNvEhRHaJBBIN0yIIgiNO8VnM9bqVlQxLaW2ePANnSTkFWyOaKxLXvaxuC2WRLLgKYUeyZHI5Sn3KI8e6u9N7TWGltSSlcZha8KCuGspBnw0JojZOqC9QrWF8ixaxZjitx9bAYghI1VbgeU2A1Gewx6sySTYeZiOJ15nnSnHKee6x031KieA3k2AAHIWq/wDdvGOWkp6aioI6VqvbKlZaqmnMUneneCoTyIksTS/IK0sLrFJJJ3Z5GY2RFSBhNjp2fiHca+sF1UJjUJT+KTpmKgmQLJiBNzQ1bYc2qG8Pg2z1GRRSqwKzKSCEkhZSoSpJKZUlIMDeZ0345y1MFXS7klJHLucySU1PB2oxDKkKRtLIrSyyxpWR9mH8Rg/4MMqsFikEgNo7GTtF1nFsLAdRKRcgKTMgcAQrMQDYklJ1kWOFx7uzUuNYpslooBJlKikXJUUBWcJSIVISYSVHmM+9TdVlKpnUEFXjdSRiwZMXUm1gSr+bFgy5c46n4fByzlVIsQRyuCOItY791R148tvdY0dClSVA7xBBBFje4NxvFNp62XtpH21KIHAVgrKVkdXcEYDguiMMcbY8W1OS07mUrOZVEkWJjTy9d9eXtIqZSx+FIIAtoogkabylJ5RVuPusjbFM78tNLJ6/QKEHrza5tcn2Nz6nV82wlnC5QI9K591qsTtgrJJypkkknnqZJ3elZweUh7i4YEH6EEe/2N+dVyhMg1eBRkKFSHosW+cb3WilVf1nkhph/wDvbQ1qgH63irXAYdLqlqV+BCyOZUOrSP1LFOW9QssFDGy2/hnmH1PfqqixP2aKOJl4BsQechozWn1zqfikFDLCCI7KlfrWqPApSkjkeEUwSpo4qoUKHZdLQTSDLpKYRS8aaPVaTRCJp1CJpVU16hk1Iuh91jhqopZldoLSxTrEQJTT1MEtLP2ixVe8IZnaPIqvcCglRchcoOokfAiD6G3OoOLS4tohpWVYKVIO4KQoLRO+MyRMXiYvVo9Z9AUtRQ0stHXCvSlqpIJ2WjnhmpYqyOnamephaMduF6uDcG7iPNGjzIvcOYGgYhlQQkM9ogxERAIHxB89bVD2RtJCMa8dot9RnQVCVJWla0rWYSQYJyKSIgH7skpAIqk946cnpaiMMlpMIKmMMpIdHRZo7qQCb/ldbcMrr7aGELSASCD8jWjViGMQlfVqBTdJIIta/IayORBrcHhr0+tZsVfAR2qiCumilicsSkUlPC9LkWuA8agw2DG6woVAGtPhSFoKK4RttasHjGX0HMkgEabic0AagmTpYnnWG+qum5Iqh42Ug5EWPFjf3vwPrqgfZKFEV27AY1GIYStJ3U5UeyNGCTcMQR9xfg/9Lj9DpeoiCaacdnJSnTT5/Km+o212keRYxKSWZo1V7KHNjiAxc2ysPMze5LWJ1FdRAMG5n111qew6LBQkCNTrGkxHfu8rV+FHIHSRohCVIKKQ4yxN/N5w4a9rtdGswII8pDWm5SAo6fW6ivPdoqQIngdOYJm+/kdI0ovcKAyAHktz9ebkn7ni9hck299SepF4qKnE5QEnQWpo2faHeVYwCSWAsObm/oLXvz9NMbbJNS3HMqeZ0GpM6AcTy42rVHVXTSw7VBEPNL3qZERTy93DVAXH+dQSpBZD5+MioXUjFugBKUmQPLnWs2H0SdGzHsZjEFDzrierBsrIIGhII1Bg37IMaVmTZNgmqp3KJkzdyZhGpxUct5VFza5CqoueQNU7rkJKj9XqDsrZTmJdSy0JsfIJJnx99Wvs3RtNSQSyVE4QVE6QxEwys8iUbvJUNHHico1qfkbSNir4uAbBrwEh3EI0yza53Rf4DzrqWB2bgdnJL2MdyJXlgFtRUShRuEQSUhWUyYSYF4IqC9YbuJqiWZVZUbtrGrEFhHDFHBFmRcZmOJS9iRmWsSLE3LaAhISnQADyEVgdrYtOMxTjyQQkkQDrCQEpndMATBImYJ1qPSpolURFCyJr1BIpBxr1CopE1JqlJpZU16hk0tHHp4FDJohF06KETT50x1TVUsono6mopJgpTu000kMmDEFkLRspZGKqSjXUlVJBKiz0kpMjWoeIw7WIR1byErTwUARO430I3EXueNOW9daVlSYjVVD1DQqVieVYnljUm+KzGPvY39FMhAFwAASNPUtSrqM/XHWo7GBw2GBDLYQDEhJIBjSUg5bd1a1+GmrPz1EzXMO7beKSoC44JWUUDNDI7cOXC0rqou3FY3FgCtoyCFhQ0I9bfKuTdIkIVg3m/wATDhUjWcqlXA3RChP7g7qlfjJ4HQxoat44nUShpCY1BSI4hzkBlceaQMLWPHKlgZKkJM2Hl51V7O2w9CW0rUARA7Rid0cNwI0Out6zN4i7TSQFwTDJLlj2jURRiLm2U7Fvwh7qrDNxbBWBvqpxuIZYBJuofhFz5CTXS+j+E2htEpyAob1LihCYmLEwFGbWJ0O+1UTPWOHkxqIDcWwjhklhazA42mhZSAVBDkPyODbnWXOJccg9WQD+78zXWxgmWRl60EjQ9q578qfQRSaVLu8eVTCvFsHikigQE3sFigCqGJuzKic3JJ9dM+0ONSQ2ogcMt/CR76KMI07ALqQTqTmtwvlPqIFWr0dsUEtiTGjDiyzRyRy+tjDID5yQCTFxMljkgFmN9gsUxiAIOVX5TY+RvHPTnWL2xs/H4KSB1jcT1iSCmBrJBgH9n2jOlXR0Z4bRlWkiSNAHAVggykVbgln/ADctZgCSOStgFFzPoSIBF9e7gB7ya7V/pvsDE7RQcWpZS0nsiNXFCQtSjrCTZIkiZEDKZE8UnvXBeO1tdCz2sf8AWGhMjMG/3jnTqAPZH+p1VPjMuOHv3/LwrteJbAxucx1WFaW5Eb0p7Pieyf5Txqg9s6oqoGkamneBpVKSPCEjd1LK5BkVBILsoJxcE2sbgkFoQkbq4qra2LQo5HIkyYSgEm9yQnMdTv38hDVvO6zTNnNLJM9rBpHZyF5IVcicVBJOK2W5Jtck6dVZjMbiMW4XcQ4pajvUZNtByHIW1O80zyJparTQsia9QCKFdNeoRFDSLr1BUKLRdShWeJpdI9OAoRNLounihE0uiadQyaJii06KHNGQR69FNJrWnwxbyDtNY4CtNstXT7qqWLSmnXJamwW7nOneoWNADlKi/a1th7t5vy7uWvz8q5F0pQU41DeicQkozaDMYCQZt7XVkmRAVWp+uIBUbfVKvmV6dmUj0YFclI/vAg/vqyIg/W+uT4BxTbuU/hv5GsE9SbDBB87uhWOSeof5iPuqssSEG8kDIQwZWuyOh5BVBbyYmncYbTmeIBJve+m76+Fd1wWOfxCmdnBSkISMqiklJIOi5F7WI4ieNZ+3jenEkskdRLCs0sjhKchIRk2WKLHOMUUEBVZFIUAYi1hjlPKWskJjfEkRPhFdxbwTTDSEFwqgAZoBKoESe1MnUyJvSdBukrsrPVTSCNlcrO47fBvY51FyDY3CqWI9Ab6b16kKBKfCSZ9I86MME2+lSUri2sJTE75Kgba2k8qszZxFUiOuaNI6iGYzExKsUIRW8kQUKoWNfUfzXJ9rAaZtCFgOgAKmbW5VgXOuYc+ylZW2U5QVEqVzVJvx7hHCtXdEx4UkZb/dzN/S3rc/oNAdVKia+3uguEGB2IwniCr9RJHpVSeJW+X24Tk2l3OaSdRbzLA+OH5gGCtTJDkpHkklt99QiJAUd8n5fCo+2seG9juO6KxRGQf/AF6yZAPaQACDoXIqiJE0yuDqFCSx6WgKFCSxa9QCKCkj16gkULImkoZFCSppaCRRsaamCsqTRCR6dQSaXjj04ChFVEJFp4oRVRMcWnRTJo2GPXq9NXf8LG9SxbmVjNu/S1EUqkXWSPDMowN/5lUg24YA2IBVp+EVC6wnS/DpewF9QoQd4O4juI+FbU8J9uVaBII5BLSxI0EMsZEhhjH5aGoQKGjlowflwHAcxJCS0hLsbJBSE5B+Gw3aaVx7aDLi8UcSpMKdAUpNzJPtLSd4WQVHgomwEVgfxJ2qpFNNTsmAj3GrhdVN0ekhKrDJclmSTuB1B4Z0wuGCqXqnUuZCk6TrxG7dr3V27Z7uD+0oebMktJVF+yszmSJ1TEG8wZ3zFE9J7aDUoAYLhwf4kxCBVBAJm71oyovyG/YXtrOqyJPbrq4C1IlPCTXvW+12qHv2AzHICm7Xy7L6Bou0TGFYC4t7EEjnTRkUewaeErSkZgfGprsW2TLRypbLKopo4omBVSkhkWZmYFWMgftRWvkokkK4WdlsocSiALE62sN5g6mq3DIaxeKSkEdYYABBhRJAAKh7KRqfzSADatk7/toFKYnfs0jKlPNUsSuUbDF4KewDSz1KgwjteZVd2BUhSRm+uh3/AAHM6V9oYz7PhsCnCFeVtCQFqm+RIuAbQVC2YREkjtAA598bdwMlUg9FSGMRpwMFZVe1hxkb3Yj3sBwqgRlEkma550wxgxa8O4myVNhaRwC7geQFVpLHptc3UKFlj0lBIoSWPS0Eig5otJQCKClj16gkUJImvUIijUTU8VjCaJii04UBSqJjj0+KCTREUWngUEqoqOLXqbNGQxaWnzVy/C7ADvVGp/2jGL/7LL/2J0dgwqs10hRnwSu8fXrUf2XxSrqDqSdqKqkpWrJDA+Kh45JJafCkM8DBkmWKqkifzKWC9wAqHfKPiXS2+Y3/ACt5H40TA4BrF7EbDycwQmecBUrAO7MkEW5HUAiUw/FfT7nEE3KCKlqyH/iIYWaGV/LiwXzyI4jJV1QyFndSsaqcY2/9VhAzIJtujlxgW8PjQh0I6h8rwzxCSR2VEkAQZEiSZMQCDA3ms775sDwXRJosTIxZ4pQe4xY9u5Ug4JEqsquMlleb0PC4svIfcUvKrlKYgb7HeTryCe899Rg3GGkJKk3urKqbxbwA05lVc7Xs0s6MjTIULqVeaYARyJ5iyliTi0TSKyorZOYbi4UhqnUMLS5lM3BhOot6gxE7grnRm8E7iEqbzJi0ZlRBvpyIkGN5TO6rTbxxioF/h1WpqkCYs0bCBCoI/FDYM91ACqQrZKbgC175WOW4LJgW1g+63rUHZLWH2K8MQk9Y4JKQJCQSIMk3MbgAL6xF2vfvEmur95phVztOaV441XEJGkqx2qe3EAFS86yAMFDMipctYaVC8zwUTp9GN30Kt9rY7EbWlkaHLlSBF4Ga1zrmAmTFpp98Xk/jpB/uIif8gK/006ZJ762/SZsNvtND8DLSfIGoLLFr1YopoSSLXqCRQssevUIig5o9eoChQM8evUAigZk16gkUdGmrEVglGio49PFAJoyKLTwKjqVRUcOiRQSqioodJXgqjIYNJRAakfSu8TU88NRTsUmhkSSJgL+dWBXym4YFgAVIIPpY6UGDahvsoebLbgkHd7uczpzobxl2yQVtRUMkcE8TJP3IndhkrhFYI4CRlWhZjHk1sR53Bvqox5U24VKVJIzJEcCnfrP1wq12CWX8IlhCISk9W4SbkqC8wAsAOBsdOBNQXcajNVMcQEcdRUwyYF2Z0qZRJHMVN18mIiuoAIii9SxOomIcyplIiCr3hQnvFu6avMBhjn7aiQUNmOHZKFR3ET3xVgeHGw7t2qVttFcZhBI03ysM05K/OVcKySRpHKClgYlZ1IyQgG68YTa+I2dkjF9ULx2lBN4B1kXgg8cpG410TZmFxCiQFGLamBpum30aU8Q9k3cR1DbmNwzNOpp/mYZqfH+Mo43kijeOJB5X7LOq+sqgm7LoGysRs4pjCFrW+VQVNlGJBJJ1VE6JJ0BqXjsNiEWKrHgQfUaTEVWCQYA5oO2zw0yA5KcYplleYLwLNiyDLLiR+PRtbrCLBAUrinzN4/lAv3isPigQS2jelXHRNgeHaUbdx76f/DqNxWQzBI5XkZ3u7yKCTJ23ayXU8zriC3JvcrYHTmCp0kgwQnMq3En5VfbMxSMFjGsyc0uJQiSRcpABMWIBVOt4OljUk3qqkklklmJ7ru7vcWszMWYBf5QGJsvt6amCtTjlvOvKW/Ocm+7wjdHCmySDXqq1JoWWDS1HKKEmh16gKTQE8evUBQoGePS1GUKb549JQFCj4U1aCucqNHQw6IBUZSqMih0QVHKqMjh0tBzUVFBr1KDTrte0u5silj729Bf0uTYC/oLkXPAueNCWoJEqNWeEwr2KXkZQVHfGgHEkwEjmSOGtq/bp158i0iwGN6wx4wyANIY5HIUmEWxEgBI7j8giyKSTqE+oKSNb7vdP18K0mysW5svELW0htSwIDpOYNmJKkAwCoXTmIMTIiDm4+I7qb8akkivjU0FJVNmoGXzMEc44RgAyNLKjAEqCeOVBVuPSHMi9+UjwJFr9w51nOjjBw/Xs2IDiY1sUpiRpxI53kVX3R9cEZsgQT2GX28qsZVZRxxdcgR6Fh9saB52GnEj8QjuIMek+lbxGEK3mV6ZSSeaSN3fF/wB7wr6DfAitqoHIHubXVJiPZot3aqN//a3GE2+jfca+aunyszJEaOoP6mcvvbNdQYSOpEbj/cPmDR3x1G9TECLom2Rs308297e5B/VIHP6KfpqN0FsyqDcumP8AwOCfNQHjR4HVKJ/MPRJmvnb1ROXZRyxBmZv7owZibflXn1It5T6AHX0yh+WkjSPiYAHgPWuZKwuR5atc0eQEqJ4ST6U/eDm8Bppe75UipaqYFB+QRRPUOQHYjkxIABYcfUkta4ZAbQ4r9kehsPX14UPDkLxuHDhhIUsk9zajN+GW/nrThS+J3zRiWpwWdUEb1BBV5CvlQ1A/KWIxTvAAmwDi9mKpVIv9fXGtyekA2gtDWKCQvTrNM3DMNx3E+OmjpW0LIbMpF/Q+x+uJHBt6GxNjwbEEaeCDpRcRhXGVQsR7j3HQ0BLFpagKTQc0Wkmo6k031EOlmoyk03zJpaiKTTdUJr1RlCnCnj1aiuXrVThBDowFQ1Ki9OsG3Nkq2F2sByLXIvZmviht65lbe9tMU6hOpq1wmxcbjFJDDZMmAZSBPAkkAEbwSCN9O9XsRjbAvGXAUlVYkjIAgXxCM1iPKrE/vxqMjFtqVlvVxtLolj9nlSXchUkAqSlWYiYtoATcWBNdwUIHL8D1t6cDk/Wwt72NtTyDE1i21pzgKmN8cOG+50Fjeux1M4RwJ0pYJY3CqqGSeWzWsiDF8PKc2MsVwAGNiSKd1ZSvSSN+gH1/xXVNnsIewa0l8YdlYghI611YkgpFwBmjtEFKSBCswMVVsEtN807s0whRLo2Ec0jP5Vs5EkMIY+Y/nCLYKCxALgQ4ErBVcnn8z9GqvFspWhacOClCScoVckTAkoTAnUmLC0qNy+eKdU0tLt82LBY42gQtyTC5+ZgJNzyDLPHYeUdmw4A0V1wLTYR/n5VU7NaU044FGSo6802PnI57760Xuu5o207M6gCRG3KjlIABK08kFRCDx7LuDeht5j7k6wiGlJx2KB9khpY/mCkq/wDzHlXQ0PZmm5iYInknQeSvjvraXwETXqoSPRodzUn6HsbBiP3WE2+6t9NcS6dj7pYOoLR/qxHz9RW+ZI+y24o/30Z8fG5Fahhfyim25WH1Drv8hX9C0UTfqo0HoI2C2DvzOR4HDj3EjxojiU/ZSo8V+gb+ZrE+z16DbN6mexkMdDRRX+tZUd+X35ITbgy+pGJ9i9+3OtrVjMI2NJcWf5E5R5lyD391YFb+VDpjdH67HyyzUW6HqmSnrZFViHiELFTb8PLvTDKxtkIo4jxa03N72O3kBEHjPl/k+lZsPqaXmTrEfqN9xuQCO4zwpKtho0qYjFLPPTyKplLQRUs0bEspiBaWrgLBcWzz7bq+LBPOEFPanQj68fq1WbicOFoyFa21Rm7IQoSdJOYSLGbDu1FyU+5ERCKOePcKWBBeFoxBWwBiMgI8pC8a38jpUVC3ZsbDSyCZ0J37j8vWt2w86yxkQ6nEsoF0H7t9A0ESSHABoZIP4YAFN9ZtwsHjuY2AIv8AmXIXCuLCzD05Ava408K3GjPYVKkh5iShQBE2IkTChuI9dRSdD060hsrJkQbKWsTa9xe2Ibg8Myn/AKaAX05su+pOF2I9iSEpygnQEwT8AeRIpnr9ocFl8pKmxAZfX6DkZH+7e+jBYquxOyX2lFBAJGsEeXPwmmCpj0Ws462UmDTbOulqCoU8UNIWNgL6uUJJrkDrgSJNPclVHAhJIMhHl+t/sPZfqT6i/wChMopQkzUVhLrzqVJFgQfLTke6440ydP7qJKqASNZO7ErFjwEMi5k39iL3P0/TVBiXQBIFdg6ODLimftCyRnTJJsBmEjkI3C1a46ooqWm6QpaqOnhlqdz3OrWpnURfMvElRURxU0c0yl1hTsxyPTx4rJ23yDBpA3HG8erE7fWyoqytpCgmTFwCTAsCc0BZBIkRcCuj7UeUsYhSROeyeAUtV1ZbBZSCQkK3WEWjM3VPXcUGIwWoqfV1uWgj5Nos+GldQQrFRiWDCy/kHbm9oIDSSACqB3DgNSZA1r5xe6O4pWJdStRQ3mUAbFazN1QAAAozltcQRIg1XW5rVVTdyRI4VAtkQYY7eouCSTbmxsbXNyPaKt0vHMfSwrQYXBowaS0gniZMma42Dai8T25OOCpiLknzrZr8EsQPb7mx4YGUmXJ0v6VJOMWlQZCZzdnzMe/Spt1FJlQQ0zphIKVzGrNcibbqmVHXgWu9O9QeByyoOfUBcV7JGkR4Ex74PcDxoGFaLbryVa5v6gAeOgBUIvJI4UxbDuCttbwY3eKvDq3Fx81T3svvdm29IzwBaQc8i2cxLZTjQ5Ni3cfuK393WE+Fa7CdpggC4UP6kk+uSPGtX/An4m01NIGqqiGCPM2aaaOIWMFQjle4yZecU6kKSeVNrAkcj6dbMexAhhClGNySfxJI0Bj8WtbXZsvMjLc8O4ijPju8S6OpYPSVEFQpEebwzRy2EMckcYbtO+N3rJQA1ifMbWHIeguzMRh7PoUk3gEFOpBOoE2QNKJtFSmWClVtbHnHyFZF3yrRNq7VrSzbhGW+pFFTTNdvYFTunb+4T7G3YMOlS8dn/Clsx/OsD16qfGsLikhLInUqj9KZPK2cCiNhpG+UaKIdxzAncQNYvLXThVUXFringQD/AI5CBe9zfhzK4oKGotbcFJHvUrwqlWyXS2lvWT5lCzv5BPjUd6l6flgBilRo5IyYpI2AyVwc2za9jYiwtwQQQSPU/Vj2z9bqc64tBLCk5Smx9/rqOVcU1DU0xEkYWRfZ4yZEt6/ykFfQc8enqdPDmS/v0qO5h1OQATbTKYM8t9TnprxHMlkJEc3IGVljkNv7MsQbZEBRkp85Fg54I3XGygqI3aD4bxVxs/E7QS43h0O2JgKMAidyrQUkwJiQb1rjoeKCo6SrKiaCJKna9xpRTzFY++qGWmWWAyRqrGGQO7pA90j7iBVUJGF4q/i1YXbrTaCcrgJIk3jMQb2JEQVb4JNyZ7Fgca4hxortlBzgaFaCYVGiVGBJAFrHUzkjqTeVjrJ+2QY+5IBb0xDnEqeDwLWItrsrBCr1gdv4spxbhwyyBmMFJjfb68a43GsSTzrYMQMl4sWtZiv0yPmx9OeD7GQRk7qM1i2tptgmEvgdoaBX7Se/Up3GY3Sx1KaeDNU7rZQYNK7n1bhGVjGJKkhvoObH7sfvwB7H2uFv5E2rkTGz+scCnDInT63e+mTq2uPzNSDxjUTqB6WCysqrb2AAA/bUFxZJPeffV5s5oBhs/spPiUifM020tZyNV7lxWiaVBrZnw+7/AB7vs9R03K6JVIz1+zuzBQalQ7VFKTbjvK0zgjIhJqg2/AQHh/SFpeyNpN7ZQCWyA2+BfsmAlXhYbrpSPxGugYZ37UwUTf6j1qj93oaGmhqvnI51ropBFDH2Ve7JdZUkd2/h5IXV2cBUZgyhWYxuq9Q2biEuZVJhSSJmbQdCNygRETMX4g1hdqN4oHKISNJi+mkmSDqbRIjgRVcbh1w8tlSnRiOQXXvMD6BgLBQfrdWF9akuhe74/XrVAzhi0ZzeEW8d/uoekopy+MjiMoJJBG+WDtYzFcEBU9wFhYWuAVF2wR4rxyoJg8LEWnf9e6antHMuJHGCDBjd/j/FS3Z64CSiV3xNPVT0gaMKzBKuIGOSzgqSkjuTdSCPQNbmFtGVtmBNiY5IUkxb8wMDupNnQ24f5TPNSVJOv5coPjQ/hfTkfPKrQs0UJmjjY5GcwpPiIVFzI92UjG/lJ454qtsWU1IME5SRokEp1O4W860+xnPu3Y9qApIOpyhVoBN77ieU60BRTTqywpiqgGaIGWONRFUJFKoEkzRgkBh5SxYNmObMdOcS0uXDc+ybE3SSDYTz3aRSNPONDKnTUX3KAIuY4+c11Vz1DM8JZfxIy0tpopV7MAapcM0LSgEGnDgA53QDE5jSNoaTDgGh7PZI7SuyLGPzRwvyrzrzjoLZ0Ot9yQVHSeHpTp4o0ymHa17kObw9ySONxeH5lKae8wY3RiJTyxtigPA4Atjz1uIOVUAgAkWOUqFuIEbuPGj7ZeS40wLTlJIG7MEKvfW/pQ+5uSa0Alg823w5MFF+zGxe+ACeTtqrYCwLJ7NfVzhISM54G37ziTv7qzWLCnVRO8XNphtQ3d4qM1FLNnGIpBI0qxS9tCcY2xEioVcdv8NVGKguAmI4JKLLaIKYgiDF4vG8d/MC899OUV5wUqBJgwN3AXtbdyjupwofECWLJJKeMEm7FEELknguQowJ49lUX0UEDSmPOLXZQA/lA8bRUtj26iqoqUUiStVPIyToYFUh2KJFFE0f+svMSCqkM6W9R3cDR4zEBnMtXZAE62gSVKM2SBvNvSal7OZedXlVBT3XvoJ38bzAmtD+PG/Js+y0/TqSJJWSsldu7K2YjmIRqakB55iVIXY3FxDE2IFSQvJtgtK2ztJe11AhsAoZERKb5leMn9RE9iuh4p/7KyBN4gfE/XnasZ1Nfdib67g0IFc7eczGi9l3A96HjL8WPynkMM1upHuGHH76lgZrHfVet0sy6mJTJHCwm/LjypSl3csvPLAA3+o49fuPr7j9BdkbxVsNoKV2HL8Dv8ePfX//2Q==';
+
+  // Translations
+  const i18n = {
+    de: {
+      apiKey: 'YouTube API Key', channel: 'Kanal-ID oder URL',
+      load: 'LADEN', playlist: 'PLAYLIST',
+      noTrack: 'Kein Track geladen', configure: 'Kanal konfigurieren →',
+      emptyMsg: 'Klick oben auf <strong>⚙</strong><br>API Key & Kanal eingeben<br>und Musik laden.',
+      errApi: 'API Fehler: ', errLoad: 'Ladefehler: ', errNotFound: 'Kanal nicht gefunden',
+      errNoVideos: 'Keine Videos gefunden', errEnter: 'Bitte API Key und Kanal eingeben',
+      errVideo: 'Video konnte nicht geladen werden'
+    },
+    en: {
+      apiKey: 'YouTube API Key', channel: 'Channel ID or URL',
+      load: 'LOAD', playlist: 'PLAYLIST',
+      noTrack: 'No track loaded', configure: 'Configure channel →',
+      emptyMsg: 'Click <strong>⚙</strong> above<br>Enter API Key & Channel<br>to load music.',
+      errApi: 'API Error: ', errLoad: 'Load error: ', errNotFound: 'Channel not found',
+      errNoVideos: 'No videos found', errEnter: 'Please enter API Key and Channel',
+      errVideo: 'Video could not be loaded'
+    },
+    tr: {
+      apiKey: 'YouTube API Anahtarı', channel: 'Kanal ID veya URL',
+      load: 'YÜKLE', playlist: 'ÇALMA LİSTESİ',
+      noTrack: 'Parça yüklenmedi', configure: 'Kanalı yapılandır →',
+      emptyMsg: 'Yukarıdaki <strong>⚙</strong> simgesine tıkla<br>API Anahtarı & Kanal gir<br>ve müziği yükle.',
+      errApi: 'API Hatası: ', errLoad: 'Yükleme hatası: ', errNotFound: 'Kanal bulunamadı',
+      errNoVideos: 'Video bulunamadı', errEnter: 'Lütfen API Anahtarı ve Kanal girin',
+      errVideo: 'Video yüklenemedi'
+    }
+  };
+
+  let currentLang = localStorage.getItem('aimusic_lang') || 'de';
+  const langFlags = { de: 'DE', en: 'EN', tr: 'TR' };
+  const langNames = { de: 'DE', en: 'EN', tr: 'TR' };
+
+  function applyLang(lang) {
+    currentLang = lang;
+    const t = i18n[lang];
+    document.getElementById('lblApiKey').textContent = t.apiKey;
+    document.getElementById('lblChannel').textContent = t.channel;
+    document.getElementById('btnLoad').textContent = t.load;
+    document.getElementById('lblPlaylist').textContent = t.playlist;
+    document.getElementById('currentFlag').textContent = langFlags[lang];
+    if (!tracks.length) {
+      document.getElementById('trackTitle').textContent = t.noTrack;
+      document.getElementById('trackChannel').textContent = t.configure;
+      document.getElementById('emptyMsg').innerHTML = t.emptyMsg;
+    }
+    document.querySelectorAll('.lang-option').forEach((el, i) => {
+      el.classList.toggle('active', ['de','en','tr'][i] === lang);
+    });
+    localStorage.setItem('aimusic_lang', lang);
+  }
+
+  function setLang(lang) {
+    applyLang(lang);
+    document.getElementById('langDropdown').classList.remove('open');
+  }
+
+  function toggleLangMenu() {
+    document.getElementById('langDropdown').classList.toggle('open');
+  }
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.lang-wrap')) {
+      document.getElementById('langDropdown').classList.remove('open');
+    }
+  });
+
+  // Player state
+  let player = null, tracks = [], currentIndex = 0;
+  let isPlaying = false, isShuffle = false, isRepeat = false;
+  let progressInterval = null, playerReady = false;
 
   // Theme
   const savedTheme = localStorage.getItem('aimusic_theme') || 'dark';
@@ -595,11 +316,10 @@
     document.documentElement.classList.remove('light');
     document.getElementById('themeIcon').innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
   }
-
   function toggleTheme() {
     const isLight = document.documentElement.classList.contains('light');
-    if (isLight) { applyDark(); localStorage.setItem('aimusic_theme', 'dark'); }
-    else { applyLight(); localStorage.setItem('aimusic_theme', 'light'); }
+    if (isLight) { applyDark(); localStorage.setItem('aimusic_theme','dark'); }
+    else { applyLight(); localStorage.setItem('aimusic_theme','light'); }
   }
 
   // Load saved config
@@ -607,63 +327,50 @@
   if (saved.apiKey) document.getElementById('apiKey').value = saved.apiKey;
   if (saved.channelId) document.getElementById('channelId').value = saved.channelId;
 
-  function toggleSetup() {
-    document.getElementById('setupPanel').classList.toggle('open');
-  }
+  // Apply saved language
+  applyLang(currentLang);
+
+  function toggleSetup() { document.getElementById('setupPanel').classList.toggle('open'); }
 
   function showError(msg) {
     const t = document.getElementById('errorToast');
-    t.textContent = msg;
-    t.classList.add('show');
+    t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3500);
   }
 
-  // YouTube IFrame API ready
   function onYouTubeIframeAPIReady() {
     player = new YT.Player('yt-player', {
-      height: '1',
-      width: '1',
-      playerVars: { autoplay: 0, controls: 0, rel: 0 },
-      events: {
+      height:'1', width:'1',
+      playerVars:{autoplay:0,controls:0,rel:0},
+      events:{
         onReady: () => { playerReady = true; },
         onStateChange: onPlayerStateChange,
-        onError: (e) => showError('Video konnte nicht geladen werden (' + e.data + ')')
+        onError: (e) => showError(i18n[currentLang].errVideo + ' (' + e.data + ')')
       }
     });
   }
 
   function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
-      isPlaying = true;
-      updatePlayIcon();
+      isPlaying = true; updatePlayIcon();
       document.getElementById('playingIndicator').classList.add('visible');
       startProgressUpdate();
     } else if (event.data === YT.PlayerState.PAUSED) {
-      isPlaying = false;
-      updatePlayIcon();
+      isPlaying = false; updatePlayIcon();
       document.getElementById('playingIndicator').classList.remove('visible');
       stopProgressUpdate();
     } else if (event.data === YT.PlayerState.ENDED) {
       document.getElementById('playingIndicator').classList.remove('visible');
-      if (isRepeat) {
-        player.seekTo(0);
-        player.playVideo();
-      } else {
-        nextTrack();
-      }
+      if (isRepeat) { player.seekTo(0); player.playVideo(); } else { nextTrack(); }
     }
   }
 
   async function loadChannel() {
     const apiKey = document.getElementById('apiKey').value.trim();
     let channelInput = document.getElementById('channelId').value.trim();
-
-    if (!apiKey || !channelInput) { showError('Bitte API Key und Kanal eingeben'); return; }
-
-    // Save config
-    localStorage.setItem('aimusic_cfg', JSON.stringify({ apiKey, channelId: channelInput }));
-
-    // Extract channel ID from URL if needed
+    const t = i18n[currentLang];
+    if (!apiKey || !channelInput) { showError(t.errEnter); return; }
+    localStorage.setItem('aimusic_cfg', JSON.stringify({apiKey, channelId: channelInput}));
     let channelId = channelInput;
     if (channelInput.includes('youtube.com/@')) {
       const handle = channelInput.split('@')[1].split('/')[0];
@@ -672,105 +379,68 @@
     } else if (channelInput.includes('youtube.com/channel/')) {
       channelId = channelInput.split('/channel/')[1].split('/')[0];
     }
-
     document.getElementById('playlist').innerHTML = '<div class="loader"><span></span><span></span><span></span></div>';
     document.getElementById('setupPanel').classList.remove('open');
-
     await fetchVideos(channelId, apiKey);
   }
 
   async function resolveHandle(handle, apiKey) {
     try {
-      const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${handle}&key=${apiKey}`);
+      const res = await fetch('https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=' + handle + '&key=' + apiKey);
       const data = await res.json();
       if (data.items && data.items.length > 0) return data.items[0].id;
-      showError('Kanal nicht gefunden');
-      return null;
-    } catch { showError('Fehler beim Laden des Kanals'); return null; }
+      showError(i18n[currentLang].errNotFound); return null;
+    } catch { showError(i18n[currentLang].errNotFound); return null; }
   }
 
-  async function fetchVideos(channelId, apiKey, pageToken = '', allItems = []) {
+  async function fetchVideos(channelId, apiKey) {
     try {
-      // Get uploads playlist ID
-      if (allItems.length === 0) {
-        const chanRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`);
-        const chanData = await chanRes.json();
-        if (!chanData.items || chanData.items.length === 0) { showError('Kanal nicht gefunden'); return; }
-        const uploadsId = chanData.items[0].contentDetails.relatedPlaylists.uploads;
-        await fetchPlaylistItems(uploadsId, apiKey, '', []);
-      }
-    } catch (e) { showError('API Fehler: ' + e.message); }
+      const chanRes = await fetch('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=' + channelId + '&key=' + apiKey);
+      const chanData = await chanRes.json();
+      if (!chanData.items || chanData.items.length === 0) { showError(i18n[currentLang].errNotFound); return; }
+      const uploadsId = chanData.items[0].contentDetails.relatedPlaylists.uploads;
+      await fetchPlaylistItems(uploadsId, apiKey, '', []);
+    } catch (e) { showError(i18n[currentLang].errApi + e.message); }
   }
 
-  async function fetchPlaylistItems(playlistId, apiKey, pageToken = '', allItems = []) {
+  async function fetchPlaylistItems(playlistId, apiKey, pageToken, allItems) {
     try {
-      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${apiKey}${pageToken ? '&pageToken=' + pageToken : ''}`;
+      const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=' + playlistId + '&maxResults=50&key=' + apiKey + (pageToken ? '&pageToken=' + pageToken : '');
       const res = await fetch(url);
       const data = await res.json();
-
-      if (data.error) { showError('API Fehler: ' + data.error.message); return; }
-
+      if (data.error) { showError(i18n[currentLang].errApi + data.error.message); return; }
       const items = [...allItems, ...(data.items || [])];
-
       if (data.nextPageToken && items.length < 200) {
         await fetchPlaylistItems(playlistId, apiKey, data.nextPageToken, items);
-      } else {
-        processVideos(items);
-      }
-    } catch (e) { showError('Ladefehler: ' + e.message); }
+      } else { processVideos(items); }
+    } catch (e) { showError(i18n[currentLang].errLoad + e.message); }
   }
 
   function processVideos(items) {
-    tracks = items
-      .filter(i => i.snippet.resourceId && i.snippet.resourceId.videoId)
-      .map(i => ({
-        id: i.snippet.resourceId.videoId,
-        title: i.snippet.title,
-        channel: i.snippet.channelTitle,
-        thumb: i.snippet.thumbnails?.medium?.url || i.snippet.thumbnails?.default?.url || ''
-      }));
-
-    if (tracks.length === 0) { showError('Keine Videos gefunden'); return; }
-
+    tracks = items.filter(i => i.snippet.resourceId && i.snippet.resourceId.videoId).map(i => ({
+      id: i.snippet.resourceId.videoId, title: i.snippet.title,
+      channel: i.snippet.channelTitle,
+      thumb: i.snippet.thumbnails?.medium?.url || i.snippet.thumbnails?.default?.url || ''
+    }));
+    if (tracks.length === 0) { showError(i18n[currentLang].errNoVideos); return; }
     document.getElementById('trackCount').textContent = tracks.length + ' Tracks';
-    renderPlaylist();
-
-    // Auto-load first
-    loadTrack(0);
+    renderPlaylist(); loadTrack(0);
   }
 
   function renderPlaylist() {
-    const pl = document.getElementById('playlist');
-    pl.innerHTML = tracks.map((t, i) => `
-      <div class="track-item ${i === currentIndex ? 'active' : ''}" onclick="loadTrack(${i})" id="track-${i}">
-        <div class="track-num">${i === currentIndex ? '▶' : i + 1}</div>
-        <div class="track-item-thumb">
-          ${t.thumb ? `<img src="${t.thumb}" loading="lazy" />` : ''}
-        </div>
-        <div class="track-item-info">
-          <div class="track-item-title">${t.title}</div>
-          <div class="track-item-duration">${t.channel}</div>
-        </div>
-      </div>
-    `).join('');
+    document.getElementById('playlist').innerHTML = tracks.map((t, i) => '<div class="track-item ' + (i === currentIndex ? 'active' : '') + '" onclick="loadTrack(' + i + ')" id="track-' + i + '"><div class="track-num">' + (i === currentIndex ? '▶' : i+1) + '</div><div class="track-item-thumb">' + (t.thumb ? '<img src="' + t.thumb + '" loading="lazy"/>' : '') + '</div><div class="track-item-info"><div class="track-item-title">' + t.title + '</div><div class="track-item-duration">' + t.channel + '</div></div></div>').join('');
   }
 
   function loadTrack(index) {
     if (!tracks.length || !playerReady) return;
-
-    // Update active states
     document.querySelectorAll('.track-item').forEach((el, i) => {
       el.classList.toggle('active', i === index);
-      el.querySelector('.track-num').textContent = i === index ? '▶' : i + 1;
+      el.querySelector('.track-num').textContent = i === index ? '▶' : i+1;
     });
-
     currentIndex = index;
     const track = tracks[index];
-
-    // Update now playing UI
     document.getElementById('trackTitle').textContent = track.title;
     document.getElementById('trackChannel').textContent = track.channel;
-
     if (track.thumb) {
       document.getElementById('trackThumb').src = track.thumb;
       document.getElementById('trackThumb').style.display = 'block';
@@ -779,110 +449,60 @@
       document.getElementById('trackThumb').style.display = 'none';
       document.getElementById('thumbPlaceholder').style.display = 'flex';
     }
-
-    // Load & play
-    player.loadVideoById(track.id);
-    isPlaying = true;
-    updatePlayIcon();
-
-    // Scroll track into view
-    setTimeout(() => {
-      const el = document.getElementById('track-' + index);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 100);
+    player.loadVideoById(track.id); isPlaying = true; updatePlayIcon();
+    setTimeout(() => { const el = document.getElementById('track-'+index); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 100);
   }
 
   function togglePlay() {
     if (!playerReady || !tracks.length) { toggleSetup(); return; }
-    if (isPlaying) { player.pauseVideo(); }
-    else { player.playVideo(); }
+    if (isPlaying) player.pauseVideo(); else player.playVideo();
   }
-
   function nextTrack() {
     if (!tracks.length) return;
-    let next;
-    if (isShuffle) {
-      next = Math.floor(Math.random() * tracks.length);
-    } else {
-      next = (currentIndex + 1) % tracks.length;
-    }
-    loadTrack(next);
+    loadTrack(isShuffle ? Math.floor(Math.random()*tracks.length) : (currentIndex+1)%tracks.length);
   }
-
   function prevTrack() {
     if (!tracks.length) return;
-    const prev = (currentIndex - 1 + tracks.length) % tracks.length;
-    loadTrack(prev);
+    loadTrack((currentIndex-1+tracks.length)%tracks.length);
   }
-
-  function toggleShuffle() {
-    isShuffle = !isShuffle;
-    document.getElementById('shuffleBtn').classList.toggle('ctrl-active', isShuffle);
-  }
-
-  function toggleRepeat() {
-    isRepeat = !isRepeat;
-    document.getElementById('repeatBtn').classList.toggle('ctrl-active', isRepeat);
-  }
-
+  function toggleShuffle() { isShuffle=!isShuffle; document.getElementById('shuffleBtn').classList.toggle('ctrl-active',isShuffle); }
+  function toggleRepeat() { isRepeat=!isRepeat; document.getElementById('repeatBtn').classList.toggle('ctrl-active',isRepeat); }
   function updatePlayIcon() {
-    const svg = document.getElementById('playIcon');
-    if (isPlaying) {
-      svg.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-    } else {
-      svg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
-    }
+    document.getElementById('playIcon').innerHTML = isPlaying
+      ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+      : '<polygon points="5 3 19 12 5 21 5 3"/>';
   }
-
   function startProgressUpdate() {
     stopProgressUpdate();
     progressInterval = setInterval(() => {
       if (!player || !playerReady) return;
-      const current = player.getCurrentTime() || 0;
-      const duration = player.getDuration() || 0;
-      if (duration > 0) {
-        document.getElementById('progressFill').style.width = (current / duration * 100) + '%';
-        document.getElementById('timeElapsed').textContent = formatTime(current);
-        document.getElementById('timeDuration').textContent = formatTime(duration);
+      const cur = player.getCurrentTime()||0, dur = player.getDuration()||0;
+      if (dur > 0) {
+        document.getElementById('progressFill').style.width = (cur/dur*100)+'%';
+        document.getElementById('timeElapsed').textContent = formatTime(cur);
+        document.getElementById('timeDuration').textContent = formatTime(dur);
       }
     }, 500);
   }
-
-  function stopProgressUpdate() {
-    if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
-  }
-
+  function stopProgressUpdate() { if(progressInterval){clearInterval(progressInterval);progressInterval=null;} }
   function seekTo(e) {
     if (!playerReady || !tracks.length) return;
-    const bar = e.currentTarget;
-    const pct = e.offsetX / bar.offsetWidth;
-    const duration = player.getDuration() || 0;
-    player.seekTo(pct * duration, true);
+    player.seekTo((e.offsetX/e.currentTarget.offsetWidth)*(player.getDuration()||0),true);
   }
+  function formatTime(s) { return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'); }
 
-  function formatTime(s) {
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return m + ':' + String(sec).padStart(2, '0');
-  }
-
-  // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT') return;
-    if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-    if (e.code === 'ArrowRight') nextTrack();
-    if (e.code === 'ArrowLeft') prevTrack();
+    if (e.target.tagName==='INPUT') return;
+    if (e.code==='Space'){e.preventDefault();togglePlay();}
+    if (e.code==='ArrowRight') nextTrack();
+    if (e.code==='ArrowLeft') prevTrack();
   });
 
-  // Auto-load if config saved
   if (saved.apiKey && saved.channelId) {
-    setTimeout(() => {
-      document.getElementById('setupPanel').classList.add('open');
-    }, 500);
+    setTimeout(() => document.getElementById('setupPanel').classList.add('open'), 500);
   } else {
     setTimeout(() => toggleSetup(), 300);
   }
 </script>
-
 </body>
 </html>
