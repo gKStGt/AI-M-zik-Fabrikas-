@@ -1,0 +1,22 @@
+{
+  "name": "AI Music Player",
+  "short_name": "AI Music",
+  "description": "YouTube Channel Music Player PWA",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/e8ff00/000000?text=♫",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/e8ff00/000000?text=♫",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
